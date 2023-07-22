@@ -1,12 +1,31 @@
 /* eslint-disable react/prop-types */
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./Item.css";
+import ItemCount from "../ItemCount/ItemCount";
+import { CarritoContext } from "../../context/CarritoContext";
 
-const Item = ({ id, artista, album, precio, img }) => {
+const Item = ({ id, artista, album, precio, img, stock }) => {
+
+
   const formato_precio = precio.toLocaleString('es-CL', {
     style: 'currency',
     currency: 'CLP'
   });
+
+  const [agregarCantidad, setAgregarCantidad] = useState(0);
+
+  const {agregarProducto} = useContext(CarritoContext);
+ 
+
+  const manejadorCantidad = (cantidad) => {
+      setAgregarCantidad(cantidad);
+      const item = {id, artista, album, precio};
+      console.log(item);
+      
+      agregarProducto(item, cantidad);
+  }
+
   return (
     <div className="cardContainer">
       <img className="img" src={img} alt={artista} />
@@ -16,8 +35,7 @@ const Item = ({ id, artista, album, precio, img }) => {
       <Link className="btn-white" to={`/item/${id}`} > 
       Ver Producto
       </Link> 
-   
-      <button className="btn-black">COMPRAR</button>
+      <ItemCount inicial={0} stock={stock} funcionAgregar={manejadorCantidad}/>
     </div>
   );
 };
